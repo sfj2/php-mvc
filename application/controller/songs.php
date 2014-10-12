@@ -57,7 +57,7 @@ class Songs extends Controller
         }
 
         // where to go after song has been added
-        header('location: ' . URL . 'songs/index');
+        header('location: ' . FULL_URL . 'songs/index');
     }
 
     /**
@@ -82,6 +82,6 @@ class Songs extends Controller
         }
 
         // where to go after song has been deleted
-        header('location: ' . URL . 'songs/index');
+        header('location: ' . FULL_URL . 'songs/index');
     }
 }
