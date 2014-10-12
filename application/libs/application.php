@@ -23,8 +23,14 @@ class Application
      */
     public function __construct()
     {
-        // create array with URL parts in $url
-        $this->splitUrl();
+        // if mod_rewrite is activated (define this in application/config/config.php), then the URL looks different
+        // than without, so we decide which way to go here. These methods will split the URL to its parts, putting
+        // the results into $url_controller, $url_action, $url_parameter_1 etc.
+        if (MOD_REWRITE) {
+            $this->getUrlWithModRewrite();
+        } else {
+            $this->getUrlWithoutModRewrite();
+        }
 
         // check for controller: does such a controller exist ?
         if (file_exists('./application/controller/' . $this->url_controller . '.php')) {
@@ -55,18 +61,59 @@ class Application
                 // default/fallback: call the index() method of a selected controller
                 $this->url_controller->index();
             }
-        } else {
-            // invalid URL, so simply show home/index
+
+        } else if (!$this->url_controller) {
+            // we don't have a controller, so the user is on the homepage
             require './application/controller/home.php';
-            $home = new Home();
-            $home->index();
+            $page = new Home();
+            $page->index();
+        } else {
+            // invalid URL, so simply show error/index
+            require './application/controller/error.php';
+            $page = new Error();
+            $page->index();
         }
     }
 
     /**
-     * Get and split the URL
+     * Get and split the URL when mod_rewrite is NOT activated
      */
-    private function splitUrl()
+    private function getUrlWithoutModRewrite()
+    {
+        // get URL ($_SERVER['REQUEST_URI'] gets everything after domain and domain ending), something like
+        // array(6) { [0]=> string(0) "" [1]=> string(9) "index.php" [2]=> string(10) "controller" [3]=> string(6) "action" [4]=> string(6) "param1" [5]=> string(6) "param2" }
+        // split on "/"
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+
+        // remove everything that's empty or "index.php", so the result is a cleaned array of URL parts, like
+        // array(4) { [2]=> string(10) "controller" [3]=> string(6) "action" [4]=> string(6) "param1" [5]=> string(6) "param2" }
+        $url = array_diff($url, array('', 'index.php'));
+
+        // to keep things clean we reset the array keys, so we get something like
+        // array(4) { [0]=> string(10) "controller" [1]=> string(6) "action" [2]=> string(6) "param1" [3]=> string(6) "param2" }
+        $url = array_values($url);
+
+        // Put URL parts into according properties
+        // By the way, the syntax here is just a short form of if/else, called "Ternary Operators"
+        // @see http://davidwalsh.name/php-shorthand-if-else-ternary-operators
+        $this->url_controller = (isset($url[0]) ? $url[0] : null);
+        $this->url_action = (isset($url[1]) ? $url[1] : null);
+        $this->url_parameter_1 = (isset($url[2]) ? $url[2] : null);
+        $this->url_parameter_2 = (isset($url[3]) ? $url[3] : null);
+        $this->url_parameter_3 = (isset($url[4]) ? $url[4] : null);
+
+        // for debugging. uncomment this if you have problems with the URL
+         echo 'Controller: ' . $this->url_controller . '<br />';
+         echo 'Action: ' . $this->url_action . '<br />';
+         echo 'Parameter 1: ' . $this->url_parameter_1 . '<br />';
+         echo 'Parameter 2: ' . $this->url_parameter_2 . '<br />';
+         echo 'Parameter 3: ' . $this->url_parameter_3 . '<br />';
+    }
+
+    /**
+     * Get and split the URL when mod_rewrite is activated
+     */
+    private function getUrlWithModRewrite()
     {
         if (isset($_GET['url'])) {
 
