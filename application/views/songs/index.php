@@ -33,15 +33,15 @@
             <tbody>
             <?php foreach ($songs as $song) { ?>
                 <tr>
-                    <td><?php if (isset($song->id)) echo $song->id; ?></td>
-                    <td><?php if (isset($song->artist)) echo $song->artist; ?></td>
-                    <td><?php if (isset($song->track)) echo $song->track; ?></td>
+                    <td><?php if (isset($song["id"])) echo $song["id"]; ?></td>
+                    <td><?php if (isset($song["artist"])) echo $song["artist"]; ?></td>
+                    <td><?php if (isset($song["track"])) echo $song["track"]; ?></td>
                     <td>
                         <?php if (isset($song->link)) { ?>
-                            <a href="<?php echo $song->link; ?>"><?php echo $song->link; ?></a>
+                            <a href="<?php echo $song["link"]; ?>"><?php echo $song["link"]; ?></a>
                         <?php } ?>
                     </td>
-                    <td><a href="<?php echo URL . 'songs/deletesong/' . $song->id; ?>">x</a></td>
+                    <td><a href="<?php echo URL . 'songs/deletesong/' . $song["id"]; ?>">x</a></td>
                 </tr>
             <?php } ?>
             </tbody>

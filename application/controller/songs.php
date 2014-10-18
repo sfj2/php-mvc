@@ -25,6 +25,8 @@ class Songs extends Controller
         $songs_model = $this->loadModel('SongsModel');
         $songs = $songs_model->getAllSongs();
 
+    //    var_dump($songs);
+
         // load another model, perform an action, pass the returned data to a variable
         // NOTE: please write the name of the model "LikeThis"
         $stats_model = $this->loadModel('StatsModel');
@@ -47,7 +49,7 @@ class Songs extends Controller
     public function addSong()
     {
         // simple message to show where you are
-        echo 'Message from Controller: You are in the Controller: Songs, using the method addSong().';
+      //  echo 'Message from Controller: You are in the Controller: Songs, using the method addSong().';
 
         // if we have POST data to create a new song entry
         if (isset($_POST["submit_add_song"])) {
@@ -72,7 +74,7 @@ class Songs extends Controller
     public function deleteSong($song_id)
     {
         // simple message to show where you are
-        echo 'Message from Controller: You are in the Controller: Songs, using the method deleteSong().';
+      //  echo 'Message from Controller: You are in the Controller: Songs, using the method deleteSong().';
 
         // if we have an id of a song that should be deleted
         if (isset($song_id)) {
